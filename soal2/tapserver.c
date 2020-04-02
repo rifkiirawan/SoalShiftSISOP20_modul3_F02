@@ -27,6 +27,8 @@ struct client Client[1024];
 pthread_t thread[1024];
 int player1[1024];
 int player2[1024];
+int listen1[1024];
+int listen2[1024];
 int cnt1,cnt2;
 
 void * doNetworking(void * ClientDetail){
@@ -44,6 +46,17 @@ void * doNetworking(void * ClientDetail){
 		data[read] = '\0';
 		char output[1024];
         memset(output,0,sizeof output);
+        if(strstr(data,"Listen")){
+            int i=0;
+            int cnt=0;
+            while(data[i]>='0'&&data[i]<='9'){
+                cnt=cnt*10+data[i]-48;
+                i++;
+            }
+            if(data[i+1]=='1') listen1[cnt]=clientSocket;
+            else listen2[cnt]=clientSocket;
+            return 0;
+        }
         if(strcmp(data,"Login") == 0){
             FILE *file = fopen("akun.txt","r");
             if(!file){
@@ -100,7 +113,8 @@ void * doNetworking(void * ClientDetail){
                 play=2;
                 enem=1;
             }
-            strcpy(output,"success");
+            sprintf(output,"%d|%d",cnt,play);
+            // strcpy(output,"success");
             while (cnt1!=cnt2) {
             }
             send(clientSocket,output,1024,0);
@@ -110,9 +124,13 @@ void * doNetworking(void * ClientDetail){
                 if(strcmp(data," ")==0){
                     if(play==1){
                         player2[cnt]-=10;
+                        sprintf(output,"%d\n",player2[cnt]);
+                        send(listen2[cnt],output,1024,0);
                     }
                     else{
                         player1[cnt]-=10;
+                        sprintf(output,"%d\n",player1[cnt]);
+                        send(listen1[cnt],output,1024,0);
                     }
                 }
                 if(player2[cnt]<=0){
