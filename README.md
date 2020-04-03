@@ -9,11 +9,12 @@ Kelompok F02 (0099 &amp; 0142)
 ## No 1 
 
 ### Source Code : [Triazone](https://github.com/rifkiirawan/SoalShiftSISOP20_modul3_F02/blob/master/soal1/soal2_traizone.c)
-### Source Code : [Pokezone](https://github.com/rifkiirawan/SoalShiftSISOP20_modul3_F02/blob/master/soal1/soal2_pokezone.c)
+
+#### A. Triazone
 
 Note: Triazone belum terselesaikan. Pokezone sudah.
 
-#### A. Triazone
+### Source Code : [Pokezone](https://github.com/rifkiirawan/SoalShiftSISOP20_modul3_F02/blob/master/soal1/soal2_pokezone.c)
 
 #### B. Pokezone
 
@@ -106,6 +107,39 @@ Kedua Jawaban menggunakan socked Client dan Server.
 #### A. TapClient
 
 Terdapat 2 halaman masing-masing 2 pilihan. Halaman pertama berisi login atau register. Halaman Kedua berisi Find dan logout.
+
+Halaman 0 Login
+```
+if(strcmp(input,"Login") == 0){
+    printf("Username : ");
+    scanf("%s",Username);
+    printf("Password : ");
+    scanf("%s",Password);
+    sprintf(Data,"Username:%s|Password:%s",Username,Password);
+    send(clientSocket,Data,500,0);
+    recv(clientSocket,output,1024,0);
+    child_id = fork();
+    if (child_id < 0) {
+         exit(EXIT_FAILURE);
+    }
+    if (child_id == 0) {
+         char *argv[] = {"clear", NULL}; 
+         execv("/usr/bin/clear", argv);                
+    } else {
+         while ((wait(&status)) > 0);
+    }
+    if(strcmp(output,"success")==0){
+         halaman=1;
+         printf("login success\n");
+    }
+    else {
+         halaman=0;
+         printf("login failed");
+    }
+    continue;
+}
+```
+Didalam login pada client, client diminta untuk memasukkan username dan password, kemudian dikirimkan ke server. 
 
 #### B. TapServer
 
