@@ -11,11 +11,11 @@ Kelompok F02 (0099 &amp; 0142)
 ### Source Code : [1]()
 
 
-#### A. Program menerima 4 argumen detik, menit, jam dan path file bash
+#### A. 
 
 
 
-#### B. Program akan mengeluarkan pesan error jika argumen yang diberikan tidak sesuai
+#### B. 
  
  
  
