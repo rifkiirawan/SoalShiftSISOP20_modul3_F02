@@ -11,11 +11,11 @@
 pthread_t tid[3]; //inisialisasi array untuk menampung thread dalam kasus ini ada 3 thread
 pid_t child_id;
 int status;
-int pokezonePID,namaPokemon,escape,capture,pokedollar,shiny,*RandomPokemon;
-int *shutdown,*stockLul,*stockBall,*stockBerry,*PokeShiny,*PokeName,*PokeEscape,*PokeCapture,*PokeDollar;
+int pokezonePID,namaPokemon,escape,capture,pokedollar,shiny;
+int *shutdown,*stockLul,*stockBall,*stockBerry,*PokeShiny,*PokeName,*PokeEscape,*PokeCapture,*PokeDollar,*RandomPokemon,*traiPID;
 void* pokezone(void *arg){
     pthread_t id=pthread_self();
-    if(pthread_equal(id,tid[0])){
+    if(pthread_equal(id,tid[0])){ //thread shutdown
         printf("Selamat datang di Pokezone\nSilahkan pilih Fitur:\n1. Shutdown Game\nMasukkan Angka: ");
         scanf("%d",&*shutdown);
         child_id = fork();
@@ -26,12 +26,16 @@ void* pokezone(void *arg){
             char arr[100];
             sprintf(arr,"%d",pokezonePID);
             char *argv[] = {"kill",arr, NULL}; 
-            execv("/bin/kill", argv);       
+            execv("/bin/kill", argv);   
         } else {
             while ((wait(&status)) > 0);
+            char arr[100];
+            sprintf(arr,"%d",*traiPID);
+            char *argv[] = {"kill",arr, NULL}; 
+            execv("/bin/kill", argv);
         }   
     }
-    else if(pthread_equal(id,tid[1])){
+    else if(pthread_equal(id,tid[1])){ //thread tambah item jualan
         while(1){
             sleep(10);
             if(*stockLul<=190){
@@ -46,20 +50,20 @@ void* pokezone(void *arg){
             printf("Lul: %d Ball: %d Berry: %d\n",*stockLul,*stockBall,*stockBerry);
         }
     }
-    else if(pthread_equal(id,tid[2])){
+    else if(pthread_equal(id,tid[2])){ //thread random pokemonnya
         while(1){
             sleep(1);
             srand(time(NULL));   // Initialization, should only be called once.
             int randomType = rand()%100;
             int randomNama = rand()%5;
             if(randomType<80){
-                 escape=5; capture=70; pokedollar=80; namaPokemon=randomType;
+                 escape=5; capture=70; pokedollar=80; namaPokemon=randomNama;
             }
             else if(randomType<95){
-                 escape=10; capture=50; pokedollar=100; namaPokemon=randomType+5;
+                 escape=10; capture=50; pokedollar=100; namaPokemon=randomNama+4;
             }
             else{
-                 escape=20; capture=30; pokedollar=200; namaPokemon=randomType+10;
+                 escape=20; capture=30; pokedollar=200; namaPokemon=randomNama+9;
             }
             int randomShiny=rand()%8000;
             if(randomShiny==1){
@@ -86,9 +90,9 @@ void main(){
     key = 1304; int shmid7 = shmget(key, sizeof(int), IPC_CREAT | 0666); PokeEscape = shmat(shmid7, NULL, 0);
     key = 1314; int shmid8 = shmget(key, sizeof(int), IPC_CREAT | 0666); PokeName = shmat(shmid8, NULL, 0);
     key = 1324; int shmid9 = shmget(key, sizeof(int), IPC_CREAT | 0666); RandomPokemon = shmat(shmid9, NULL, 0);
+    key = 1334; int shmid10 = shmget(key, sizeof(int), IPC_CREAT | 0666); traiPID = shmat(shmid10, NULL, 0);
     *shutdown=0; *stockLul=100; *stockBall=100; *stockBerry=100; *RandomPokemon=1;
 
-    pid_t child_id;
     int i=0;
     int err;
     while(i<3){ // loop sejumlah thread
@@ -115,4 +119,5 @@ void main(){
     shmdt(PokeEscape); shmctl(shmid7, IPC_RMID, NULL);
     shmdt(PokeName); shmctl(shmid8, IPC_RMID, NULL);
     shmdt(RandomPokemon); shmctl(shmid9, IPC_RMID, NULL);
+    shmdt(traiPID); shmctl(shmid10, IPC_RMID, NULL);
 }
