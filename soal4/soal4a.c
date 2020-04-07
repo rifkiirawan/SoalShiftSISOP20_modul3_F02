@@ -31,8 +31,9 @@ int main()
       for (d = 0; d < 5; d++){
           *value = multiply[c][d];
           sleep(2);
-          // printf("%d\n",*value);
+          printf("%4d",multiply[c][d]);
       }
+      printf("\n");
     }
   shmdt(value);
   shmctl(shmid, IPC_RMID, NULL);
