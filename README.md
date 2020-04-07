@@ -153,3 +153,100 @@ Didalam login pada client, client diminta untuk memasukkan username dan password
 ### Source Code : [4b](https://github.com/rifkiirawan/SoalShiftSISOP20_modul3_F02/blob/master/soal4/soal4b.c)
 ### Source Code : [4c](https://github.com/rifkiirawan/SoalShiftSISOP20_modul3_F02/blob/master/soal4/soal4c.c)
 
+#### 4a. Berisi sebuah program c untuk membuat perkalian 2 array dengan ukuran 4x2 dan 2x5, yang berisikan angka 1-20 yang akan ditampilkan di layar.
+
+Mendeklarasikan array dan isi matriks dengan menggunakan array 2 dimensi.
+```
+int first[4][2] = {{1,2},
+                   {3,4},
+		   {5,6},
+		   {7,8}};
+  int second[2][5] = {{1,1,1,2,3},
+		      {4,1,6,1,8}};
+```
+
+Melakukan perkalian antara 2 matriks dan menyimpan variabel yang akan di passing untuk soal 4b.
+```
+for (c = 0; c < 4; c++) {
+		for (d = 0; d < 5; d++) {
+			for (k = 0; k < 2; k++) {
+				sum = sum + first[c][k] * second[k][d];
+			}
+			multiply[c][d] = sum;
+			sum = 0;
+		}
+	}
+ 
+	for (c = 0; c < 4; c++) {
+		for (d = 0; d < 5; d++) {
+			value[5*c+d] = multiply[c][d];
+			printf("%4d",multiply[c][d]);
+		}
+		printf("\n");
+	}
+```
+
+#### 4b. Membuat program untuk mengambil data hasil perkalian matriks pada soal 4a dan dilakukan pencarian faktorial dari masing-masing angka pada matriks, yang juga akan ditampilkan.
+
+
+1. Menampilkan hasil dari perkalian matriks pada soal 4a. 
+```
+for (int i = 0;i < 20;i++)
+	{
+		d[i].angka = value[i];
+		if (i % 5 == 0) printf("\n");
+		printf("%4d", value[i]);
+		pthread_create(&tid[i],NULL, &jumn, (void*)&d[i]);
+	}
+	printf("\n");
+```
+
+2. Melakukan pencarian faktorial dari tiap-tiap angka pada matriks.
+        Setelah menampilkan perkalian matriks pada kedua matriks, akan dilakukan thread, yang memanggil fungsi jumn yang mengembalikan nilai faktorial dari tiap angka pada array, dan hasilnya akan ditampilkan.
+```
+int jumlah(int n) 
+{ 
+	int sum=0;
+	for(n;n>0;n--)
+	{
+		sum+=n;
+	}
+	return sum;
+}
+
+void *jumn(void* arg)
+{
+	data* d = (data*) arg;
+        d->hasil=jumlah(d->angka);
+}
+.
+.
+.
+for(int i=0; i< 20; i++)
+	{
+		if (i % 5 == 0) printf("\n");
+		printf("%d\t", d[i].hasil);
+		pthread_join(tid[i],NULL);
+	}
+```
+
+#### 3. Mencari jumlah file yang ada pada direktori saat ini. 
+```
+if (fork() == 0) 
+  {
+    dup2(pipe1[1], 1);
+    // close fds
+    close(pipe1[0]);
+    close(pipe1[1]);
+    char *argv1[] = {"ls", NULL};
+		execv("/bin/ls", argv1);
+  }
+  else
+  {
+    dup2(pipe1[0], 0);
+    close(pipe1[0]);
+    close(pipe1[1]);
+    char *argv1[] = {"wc", "-l", NULL};
+		execv("/usr/bin/wc", argv1);
+  }
+  ```
