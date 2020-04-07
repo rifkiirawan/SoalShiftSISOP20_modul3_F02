@@ -12,9 +12,93 @@ Kelompok F02 (0099 &amp; 0142)
 
 #### A. Triazone
 
-Note: Triazone belum terselesaikan. Pokezone sudah.
-
 ### Source Code : [Pokezone](https://github.com/rifkiirawan/SoalShiftSISOP20_modul3_F02/blob/master/soal1/soal2_pokezone.c)
+
+Terdapat 5 thread yaitu:
+
+##### 1. Thread Mencari Pokemon
+```
+if(pthread_equal(id,tid[0])){ //cariPokemon
+        while(1){
+            while(FoundPokemon==1);
+            while(CariPokemon==0);
+            sleep(10);
+            if(CariPokemon==0) continue;
+            int cek = Randomize(60);
+            if(cek==1){
+                *RandomPokemon=1;
+                FoundPokemon=1;
+                printf("Found a Pokemon. Go to Capture Mode?\n");
+            }
+            else printf(" Not found any Pokemon.\n");
+        }
+}
+```
+Melakukan pengecekan setiap 10 detik dan apabila pemain sedang mencari, maka akan diberitahu apabila menemukan pokemon.
+
+##### 2. Thread Manager AP
+```
+else if(pthread_equal(id,tid[1])){ //AP manager POKEDEX
+        while(1){
+            while(CaptureMode==1);
+            sleep(10);
+            if(CaptureMode==1) continue;
+            int a;
+            for(a=0;a<7;a++){
+                if(PokeSlot[a]==0) continue;
+                else{
+                    PokeAP[a]-=10;
+                    if(PokeAP[a]<10){
+                        int cek = Randomize(90);
+                        if(cek==1) PokeSlot[a]=0;
+                        else PokeAP[a]=50;
+                    }
+                }
+            }
+        }
+}
+```
+Setiap 10 detik, setiap pokemon akan berkurang AP nya sebanyak 10 detik. Kemudian akan hilang apabila AP=0;
+
+##### 3. Thread Lullaby Powder
+```
+else if(pthread_equal(id,tid[2])){//lullaby powder efek manager
+        while(1){
+            while(LulEfek==0);
+            sleep(10);
+            LulEfek=0;
+        }
+}
+```
+Apabila Lullaby Powder digunakan, maka selama 10 detik efeknya akan hilang.
+
+##### 4. Thread Penangkapan Pokemon
+```
+else if(pthread_equal(id,tid[3])){
+        while(1){
+            while(CaptureMode==0);
+            sleep(20);
+            if(CaptureMode==0) continue;
+            if(LulEfek==0){
+                int ER= *PokeEscape;
+                int cek=Randomize(ER);
+                if(cek==1){
+                    CaptureMode=0;
+                    CariPokemon=0;
+                    Pokedex=1;
+                    Shop=0;
+                    printf("Pokemon Run. Back to Pokedex\n");
+                }
+                else printf("Pokemon look at you\n");
+            }
+        }
+}
+```    
+Apabila pokemon didapatkan dari pencarian pokemon, maka akan diberitahukan apakah pokemon tersebut dapat ditangkap atau lari.
+
+##### 5. Thread Main
+
+Thread ini sangat panjang sehingga untuk codingan dapat dibuka di link atas. Isinya untuk menjalankan seluruh bagian game, mulai dari input yang terdapat 3 angka inputan. Angka pertama untuk peletakan dia berada di Pokedex, Normal mode, shop atau Capture mode. Angka kedua untuk menginformasikan kegiatan apa yang dilakukan di lokasi tersebut, misal shop terdapat berry, pokeball, dan lullaby powder. Untuk angka yang ketiga, menginformasikan jumlah pembelian pada shop. Segala informasi yang berkaitan dengan permainan, telah disampaikan kepada pemain pada saat bermain.
 
 #### B. Pokezone
 
@@ -32,9 +116,13 @@ if(pthread_equal(id,tid[0])){ //thread shutdown
             char arr[100];
             sprintf(arr,"%d",pokezonePID);
             char *argv[] = {"kill",arr, NULL}; 
-            execv("/bin/kill", argv);       
+            execv("/bin/kill", argv);   
         } else {
             while ((wait(&status)) > 0);
+            char arr[100];
+            sprintf(arr,"%d",*traiPID);
+            char *argv[] = {"kill",arr, NULL}; 
+            execv("/bin/kill", argv);
         }   
 }
 ``` 
@@ -139,9 +227,183 @@ if(strcmp(input,"Login") == 0){
     continue;
 }
 ```
-Didalam login pada client, client diminta untuk memasukkan username dan password, kemudian dikirimkan ke server. 
+Didalam login pada client, client diminta untuk memasukkan username dan password, kemudian dikirimkan ke server untuk dicocokkan pada data yang sudah ada di akun.txt.
+
+Register
+```
+ if(strcmp(input,"Register") == 0){
+                printf("Username : ");
+                scanf("%s",Username);
+                printf("Password : ");
+                scanf("%s",Password);
+                sprintf(Data,"Username:%s|Password:%s",Username,Password);
+                send(clientSocket,Data,500,0);
+                recv(clientSocket,output,1024,0);
+                child_id = fork();
+                if (child_id < 0) {
+                    exit(EXIT_FAILURE);
+                }
+                if (child_id == 0) {
+                    char *argv[] = {"clear", NULL}; 
+                    execv("/usr/bin/clear", argv);                
+                } else {
+                    while ((wait(&status)) > 0);
+                }
+                // system("clear");
+                if(strcmp(output,"success")==0){
+                    halaman=0;
+                    printf("register success\n");
+                }
+                else {
+                    halaman=0;
+                    printf("register failed");
+                }
+                continue;
+}
+```
+Pada Register, dengan tampilan yang sama dengan login, akan tetapi apapun yang dimasukkan sebagai username dan password tidak akan dicocokkan dengan data yang ada, tetapi langsung dimasukkan pendaftaran baru pada data sehingga dapat terjadi data ganda. Apabila sudah selesai register, akan kembali pada halaman login untuk login terlebih dahulu sebelum bermain.
+
+Halaman 1 untuk bermain dan logout
+```
+if(strcmp(input,"Logout")==0){
+                halaman=0;
+                continue;
+}
+```
+Apabila logout, halaman akan langsung reset ke halaman 0, dan harus kembali masuk melalui login apabila ingin bermain.
+
+Find Match
+```
+if(strcmp(input,"Find")==0){
+	send(clientSocket,input,500,0);
+	printf("Waiting for opponent.....\n");
+	int read=recv(clientSocket,output,1024,0);
+	output[read]='\0';
+	pthread_t thread;
+	    pthread_create(&thread, NULL, listening, output)
+	    printf("Game dimulai silahkan tap ​tap​ secepat mungkin!!\n");
+	child_id = fork();
+	if (child_id < 0) {
+	    exit(EXIT_FAILURE);
+	}
+	if (child_id == 0) {
+	    char *argv[] = {"stty", "raw", NULL}; 
+	    execv("/bin/stty", argv);                
+	} else {
+	    while ((wait(&status)) > 0);
+	}
+	while(1){
+	    input[0]=getchar();
+	    input[1]='\0';
+	    send(clientSocket,input,500,0);
+	    int read=recv(clientSocket,output,1024,0);
+	    output[read]='\0';
+	    if(!strstr(output,"hit!!")){
+		child_id = fork();
+		if (child_id < 0) {
+		    exit(EXIT_FAILURE);
+		}
+		if (child_id == 0) {
+		    char *argv[] = {"stty", "cooked", NULL}; 
+		    execv("/bin/stty", argv);                
+		} else {
+		    while ((wait(&status)) > 0);
+		}
+		printf("%s\n",output);
+		break;
+	    }
+	     printf("%s\n",output);
+	}
+}
+```
+Dalam find, apabila sudah ditemukan pemain, maka langsung dimulai dengan tap tap spasi, menggunakan stty raw dan stty cooked untuk mengambil char spasi tanpa enter. Kemudian spasi dikirimkan pada server, server akan membalas apabila pemain terkena hit. Terdapat thread agar apabila pemain tidak menekan apapun, pemain masih dapat terkena hit dan pengurangan poin akan muncul pada terminal.
+
+```
+void* listening(char cnt[]){
+    int clientSocket = socket(PF_INET, SOCK_STREAM, 0);
+	struct sockaddr_in serverAddr;
+	serverAddr.sin_family = AF_INET;
+	serverAddr.sin_port = htons(8080);
+	serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    char data[1024];
+    char output[1024];
+
+    connect(clientSocket, (struct sockaddr*) &serverAddr, sizeof(serverAddr));
+    sprintf(data,"%sListen",cnt);
+    send(clientSocket,data,1024,0);
+    while(1){
+        int read = recv(clientSocket,output,1024,0);
+        printf("%s\n",output);
+		data[read] = '\0';
+    }
+}
+```
+Isi dari thread ini hanya untuk selalu menunggu kiriman sinyal dari server apabila terkena hit dan pengurangan nilai, langsung muncul di terminal.
 
 #### B. TapServer
+
+Login
+
+```
+if(strcmp(data,"Login") == 0){
+    FILE *file = fopen("akun.txt","r");
+    if(!file){
+	FILE *file2 = fopen("akun.txt","w");
+	fclose(file2);
+	FILE *file = fopen("akun.txt","r");
+    }
+		read=recv(clientSocket,data,1024,0);
+    char found = 0;
+    while (fscanf(file, "%s", secret) != EOF) {
+	if (!strcmp(secret, data)) {
+	    found = 1;
+	    break;
+	}
+    }
+    if(found) {
+	printf("Auth success\n");
+	strcpy(output,"success");
+		send(clientSocket,output,1024,0);
+    } else {
+	printf("Auth Failed\n");
+	strcpy(output,"failed");
+		send(clientSocket,output,1024,0);
+    }
+    fclose(file); 
+}
+```
+Pada saat client mengirimkan username dan password, server akan membuka data pada akun.txt, dan membandingkan masing-masing data yang ada, apabila ditemukan, maka login sukses. Apabila akun.txt belum ada, maka akan dibuat terlebih dahulu, tetapi karena kosong, tetap tidak dapat login.
+
+Register
+
+```
+if(strcmp(data,"Register") == 0){
+			FILE *file2 = fopen("akun.txt","a");
+            read=recv(clientSocket,data,1024,0);
+            data[read]='\0';
+            fprintf(file2,"%s",data);
+            fprintf(file2,"\n");
+            strcpy(output,"success");
+            fclose(file2);
+            FILE *file = fopen("akun.txt","r");
+            while (fscanf(file, "%s", secret) != EOF) {
+                printf("%s\n",secret);
+            }
+            fclose(file);
+            send(clientSocket,output,1024,0);
+}
+```
+Pada saat register, apabila akun.txt belum ada, akan dibuat terlebih dahulu kemudian akan di cetak pada akun.txt yaitu username dan password. Kemudian diprint semua data akun dan password nya pada terminal server untuk mengecek apakah sudah tercatat atau belum.
+
+FIND MATCH
+
+Karena codingan cukup panjang, maka silahkan dibuka url di atas. Penjelasannya sebagai berikut:
+
+Pertama, server menerima sinyal bahwa ada satu client yang ingin bermain, kemudian sinyal tersebut dibiarkan sampai ada client lain yang juga ingin bermain. Setelah menemukan dua orang pemain, maka masing masing client diberi sinyal untuk memulai permainan. Setelah itu, kedua client langsung bermain tap tap.
+
+Apabila pada saat salah satu pemain melakukan tap, pemain satunya akan dikirimkan sinyal untuk menampilkan bahwa power nya dikurangi 10. Pemain yang berhasil melakukan tap, akan ditampilkan hit!! pada terminal. Setelah salah satu pemain powernya = 0, maka permainan dihentikan.
+
+Pada program server ini, menggunakan thread untuk menghandle banyak client secara bersamaan, masing-masing client satu thread.
 
 ## No 3
 
