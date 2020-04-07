@@ -230,7 +230,7 @@ for(int i=0; i< 20; i++)
 	}
 ```
 
-#### 3. Mencari jumlah file yang ada pada direktori saat ini. 
+#### 4c. Mencari jumlah file yang ada pada direktori saat ini. 
 ```
 if (fork() == 0) 
   {
