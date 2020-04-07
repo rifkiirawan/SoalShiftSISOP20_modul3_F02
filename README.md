@@ -12,8 +12,6 @@ Kelompok F02 (0099 &amp; 0142)
 
 #### A. Triazone
 
-### Source Code : [Pokezone](https://github.com/rifkiirawan/SoalShiftSISOP20_modul3_F02/blob/master/soal1/soal2_pokezone.c)
-
 Terdapat 5 thread yaitu:
 
 ##### 1. Thread Mencari Pokemon
@@ -100,6 +98,8 @@ Apabila pokemon didapatkan dari pencarian pokemon, maka akan diberitahukan apaka
 
 Thread ini sangat panjang sehingga untuk codingan dapat dibuka di link atas. Isinya untuk menjalankan seluruh bagian game, mulai dari input yang terdapat 3 angka inputan. Angka pertama untuk peletakan dia berada di Pokedex, Normal mode, shop atau Capture mode. Angka kedua untuk menginformasikan kegiatan apa yang dilakukan di lokasi tersebut, misal shop terdapat berry, pokeball, dan lullaby powder. Untuk angka yang ketiga, menginformasikan jumlah pembelian pada shop. Segala informasi yang berkaitan dengan permainan, telah disampaikan kepada pemain pada saat bermain.
 
+
+### Source Code : [Pokezone](https://github.com/rifkiirawan/SoalShiftSISOP20_modul3_F02/blob/master/soal1/soal2_pokezone.c)
 #### B. Pokezone
 
 Pokezone menggunakan thread sebanyak 3 thread dan shared memory sebanyak 10 variable.
@@ -187,10 +187,9 @@ Digunakan untuk random pokemon. Pertama, random type terlebih dahulu, terdapat 3
 
 ## No 2
 
-### Source Code : [TapClient](https://github.com/rifkiirawan/SoalShiftSISOP20_modul3_F02/blob/master/soal2/tapclient.c)
-### Source Code : [TapServer](https://github.com/rifkiirawan/SoalShiftSISOP20_modul3_F02/blob/master/soal2/tapserver.c)
-
 Kedua Jawaban menggunakan socked Client dan Server.
+
+### Source Code : [TapClient](https://github.com/rifkiirawan/SoalShiftSISOP20_modul3_F02/blob/master/soal2/tapclient.c)
 
 #### A. TapClient
 
@@ -340,7 +339,10 @@ void* listening(char cnt[]){
 ```
 Isi dari thread ini hanya untuk selalu menunggu kiriman sinyal dari server apabila terkena hit dan pengurangan nilai, langsung muncul di terminal.
 
+### Source Code : [TapServer](https://github.com/rifkiirawan/SoalShiftSISOP20_modul3_F02/blob/master/soal2/tapserver.c)
+
 #### B. TapServer
+
 
 Login
 
