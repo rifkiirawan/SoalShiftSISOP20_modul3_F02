@@ -495,6 +495,8 @@ for(int i=0; i< 20; i++)
 ```
 
 #### 4c. Mencari jumlah file yang ada pada direktori saat ini. 
+
+Seperti yang di instruksikan pada soal, fungsi wc berfungsi untuk menghitung jumlah file yang ada pada direktori yang sedang berjalan.
 ```
 if (fork() == 0) 
   {
