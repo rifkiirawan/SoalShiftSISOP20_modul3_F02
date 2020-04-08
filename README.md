@@ -411,6 +411,15 @@ Pada program server ini, menggunakan thread untuk menghandle banyak client secar
 
 ### Source Code : [3](https://github.com/rifkiirawan/SoalShiftSISOP20_modul3_F02/blob/master/soal3/soal3.c)
 
+Pada soal ini akan mengkategorikan file sesuai dengan ekstensinya masing-masing, jika argumen `-f` dimasukkan, maka file yang diinputkan setelah argumen akan dikategorikan, jika argumen `-d` dimasukkan, maka file yang terdapat pada direktori yang diinputkan setelah argumen akan dikategorikan, jika argumen `\*` dimasukkan, maka semua file yang terdapat pada direktori yang sedang ditempati akan dikategorikan.
+
+Pada tiap thread akan mengambil ekstensi dari tiap file dengan menggunakan
+``
+char* ext = strrchr(d->name,'.');
+``
+
+Pada kodingan terdapat fungsi `void lowcase` yang berfungsi agar nama filenya tidak case sensitive. Untuk fungsi `void makefile` berfungsi untuk membuat folder sesuai dengan ekstensi yang dimiliki oleh file. Untuk fungsi `void* move` berfungsi untuk memindahkan file ke folder yang telah dibuat.
+
 ## No 4
 
 ### Source Code : [4a](https://github.com/rifkiirawan/SoalShiftSISOP20_modul3_F02/blob/master/soal4/soal4a.c)
