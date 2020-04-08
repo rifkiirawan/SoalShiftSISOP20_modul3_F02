@@ -1,12 +1,12 @@
 #include <stdio.h>
+#include <pthread.h>
+#include <sys/types.h>
+#include <dirent.h>
 #include <string.h>
 #include <stdlib.h>
-#include<pthread.h>
-#include<sys/types.h>
-#include<dirent.h>
-#include<unistd.h>
-#include<sys/stat.h>
-#include<ctype.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <ctype.h>
 
 typedef struct tdata {
     char d[200];
@@ -47,7 +47,7 @@ void makefile(int argc , char* argmod[],char* name, char* ext){
             lowcase(pathold);
             mkdir(pathold,0755);
             sprintf(pathnew, "./%s/%s", pathold,name);
-        } else {
+        }else {
             mkdir("Unknown", 0755);
             sprintf(pathnew, "./Unknown/%s", name);
         }
@@ -56,11 +56,23 @@ void makefile(int argc , char* argmod[],char* name, char* ext){
     exit(EXIT_SUCCESS);
 }
 
-
 int main(int argc, char* argmod[]){
     DIR* d;
     char namadir[200];
-    if(argc >2 && strcmp(argmod[1], "-f") == 0){
+    
+    if(argc == 2 && !strcmp(argmod[1], "*")){
+        if((d = opendir(".")) == NULL){
+            printf("Folder tidak dapat dibuka.\n");
+            exit(EXIT_FAILURE);
+        }
+        strcpy(namadir, ".");
+    }else if(argc == 3 && !strcmp(argmod[1], "-d")){
+        if((d = opendir(argmod[2])) == NULL){
+            printf("Folder tidak dapat dibuka.\n");
+            exit(EXIT_FAILURE);
+        }
+        strcpy(namadir, argmod[2]);
+    }else if(argc >2 && !strcmp(argmod[1], "-f")){
         const char str[100];
         for(int i=2; i<argc;i++){
         char* name = strrchr(argmod[i],'/');
@@ -71,23 +83,7 @@ int main(int argc, char* argmod[]){
         printf("%s\n",ext+1);
         makefile(argc,argmod,name,ext);
         }
-        
-    }
-    else if(argc == 2 && strcmp(argmod[1]), "*"){
-        if((d = opendir(".")) == NULL){
-            printf("Folder tidak dapat dibuka.\n")
-            exit(EXIT_FAILURE);
-        }
-        strcpy(namadir, ".");
-    }
-    else if(argc == 3 && strcmp(argmod[1]), "-d"){
-        if((d = opendir(argmod[2])) == NULL){
-            printf("Folder tidak dapat dibuka.\n")
-            exit(EXIT_FAILURE);
-        }
-        strcpy(namadir, argmod[2]);
-    }
-    else{
+    }else{
         printf("Argumen salah.\n");
         exit(EXIT_FAILURE);
     }
