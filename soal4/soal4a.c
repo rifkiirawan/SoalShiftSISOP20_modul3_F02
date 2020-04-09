@@ -10,10 +10,10 @@ int main()
 	value = shmat(shmid, NULL, 0);
  
 	int m, n, p, q, c, d, k, sum = 0;
-	int first[4][2] = {	{1,2},
-                    		{3,4},
-		                {5,6},
-		                {7,8}};
+	int first[4][2] = {{1,2},
+                           {3,4},
+		           {5,6},
+		           {7,8}};
   int second[2][5] = {{1,1,1,2,3},
 		      {4,1,6,1,8}};
 	int multiply[4][5];
