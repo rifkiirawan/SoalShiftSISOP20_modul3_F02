@@ -525,3 +525,13 @@ if (fork() == 0)
 		execv("/usr/bin/wc", argv1);
   }
   ```
+
+## Authors
+
+Created by:
+
+[Rifki Aulia Irawan 142] (https://github.com/rifkiirawan)
+
+[Evelyn Tjitrodjojo 99] (https://github.com/marsellaeve)
+	- Kesulitan dalam mengerti soal, kepanjangan sangat sangat kepanjangan (apalagi nomor 1).
+	- Soal dalam bentuk permainan, karena saya tidak pernah main, kesulitan memahami cara main, bentuk permainan, dll.
